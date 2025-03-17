@@ -13,10 +13,16 @@ private:
 	unsigned int xpos, ypos;
 	CellType startCellType;
 public:
-	MonteCarloEval(Board* board, int numIterations, CellType startCellType, unsigned int xpos, unsigned int ypos);
+	MonteCarloEval(
+		Board* board,
+		int numIterations,
+		CellType startCellType,
+		unsigned int xpos,
+		unsigned int ypos
+	);
 	~MonteCarloEval();
-	void EvalBoard(RandomPlayer* player1, RandomPlayer* player2, Board* b);
-	void Eval(RandomPlayer* player1, RandomPlayer* player2, Board* b);
+	void EvalBoard();
+	void Eval();
 	int GetVictories() { return numVictories; }
 	int GetLosses() { return numLosses; }
 	int GetDraws() { return numDraws; }

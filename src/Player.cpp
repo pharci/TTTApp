@@ -26,22 +26,18 @@ bool AiPlayer::MakeMove() {
 	for (unsigned int i = 0; i < board->getBoardsize(); i++) {
 		for (unsigned int j = 0; j < board->getBoardsize(); j++) {
  			if (this->board->CheckLegal(j, i)) {
-				this->board->SetCell(j, i, this->cellType);
-				evals.push_back(new MonteCarloEval(this->board, 10, (this->cellType == CellType_X) ? CellType_O : CellType_X, j, i));
-				this->board->SetCell(j, i, CellType_Empty);
+				evals.push_back(new MonteCarloEval(
+					board,
+					10,
+					(this->cellType == CellType_X) ? CellType_X : CellType_O,
+					j, i)
+				);
 			}
 		}
 	}
 
-	Board* b = new Board(board->getBoardsize(), board->getSizeToWin());
-	RandomPlayer* player1 = new RandomPlayer();
-	RandomPlayer* player2 = new RandomPlayer();
-	player1->SetupPlayer("RandomX", CellType_X);
-	player2->SetupPlayer("RandomO", CellType_O);
-	player1->SetBoard(b);
-	player2->SetBoard(b);
 	for (auto eval : evals) {
-		eval->Eval(player1, player2, b);
+		eval->Eval();
 	}
 
 	int biggestVictories = -1;

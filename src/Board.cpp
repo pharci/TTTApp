@@ -5,17 +5,20 @@ Board::Board(unsigned int size, unsigned int sizeToWin) {
 	this->sizeToWin = sizeToWin;
 	this->boardsize = size;
 	cells = new CellType*[size];
-	for (unsigned int i = 0; i < size; i++)
+	for (unsigned int i = 0; i < size; i++) {
 		cells[i] = new CellType[size];
-	for (unsigned int i = 0; i < size; i++)
 		for (unsigned int j = 0; j < size; j++)
 			cells[i][j] = CellType_Empty;
+		}
 }
 
-void Board::Copy(Board* board) {
-	for (unsigned int i = 0; i < boardsize; i++) {
-		cells[i] = new CellType[boardsize];
-		for (unsigned int j = 0; j < boardsize; j++)
+Board::Board(Board* board, unsigned int size, unsigned int sizeToWin) {
+	this->sizeToWin = sizeToWin;
+	this->boardsize = size;
+	cells = new CellType * [size];
+	for (unsigned int i = 0; i < size; i++) {
+		cells[i] = new CellType[size];
+		for (unsigned int j = 0; j < size; j++)
 			cells[i][j] = board->cells[i][j];
 	}
 }
@@ -288,6 +291,7 @@ bool Board::PaintBlock() {
 	}
 	return false;
 }
+#include <chrono>
 
 bool Board::CheckEndCondition() {
 	PaintBlock();
@@ -298,6 +302,7 @@ bool Board::CheckEndCondition() {
 	}
 	if (IsDiagMade() || IsBoardFull())
 		return true;
+
 	return false;
 }
 
