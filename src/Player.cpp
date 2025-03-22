@@ -1,6 +1,10 @@
 #include "Player.h"
 #include "MonteCarloEval.h"
 
+#include <thread>
+#include <mutex>
+#include <vector>
+
 Player::~Player() {}
 RandomPlayer::~RandomPlayer() {}
 AiPlayer::~AiPlayer() {}
@@ -25,25 +29,33 @@ bool AiPlayer::MakeMove() {
 
 	for (unsigned int i = 0; i < board->getBoardsize(); i++) {
 		for (unsigned int j = 0; j < board->getBoardsize(); j++) {
+
  			if (this->board->CheckLegal(j, i)) {
-				evals.push_back(new MonteCarloEval(
-					board,
-					10,
-					(this->cellType == CellType_X) ? CellType_X : CellType_O,
-					j, i)
+
+				//board->SetCell(j, i, this->cellType);
+				//if (board->CheckEndCondition()) return true;
+				//else { board->SetCell(j, i, CellType_Empty); }
+
+				evals.push_back(new MonteCarloEval(board, 10, this->cellType, j, i)
 				);
 			}
 		}
 	}
 
+
+	std::vector<std::thread> threads;
 	for (auto eval : evals) {
-		eval->Eval();
+		std::thread t([eval]() { eval->Eval(); });
+		threads.push_back(std::move(t));
 	}
+	for (auto& t : threads) { t.join(); }
 
+
+
+	
 	int biggestVictories = -1;
-
 	for (auto eval : evals) {
-		cout << "Позиция из расчета: " << eval->GetXPos() << ", " << eval->GetYPos() << " Победы: " << eval->GetVictories() << " Поражения: " << eval->GetLosses() << endl;
+		//cout << "Позиция из расчета: " << eval->GetXPos() << ", " << eval->GetYPos() << " Победы: " << eval->GetVictories() << " Поражения: " << eval->GetLosses() << endl;
 
 		if (this->cellType == CellType_X) {
 			if (eval->GetVictories() > biggestVictories)
@@ -69,7 +81,7 @@ bool AiPlayer::MakeMove() {
 			biggestWinEvals.push_back(eval);
 		}
 	}
-	cout << "Лучшая позиция: " << biggestWinEvals[0]->GetXPos() << ", " << biggestWinEvals[0]->GetYPos() << endl;
+	//cout << "Лучшая позиция: " << biggestWinEvals[0]->GetXPos() << ", " << biggestWinEvals[0]->GetYPos() << endl;
 	this->board->SetCell(biggestWinEvals[0]->GetXPos(), biggestWinEvals[0]->GetYPos(), this->cellType);
 
  	for (auto eval : evals)

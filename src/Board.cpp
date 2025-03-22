@@ -12,13 +12,13 @@ Board::Board(unsigned int size, unsigned int sizeToWin) {
 		}
 }
 
-Board::Board(Board* board, unsigned int size, unsigned int sizeToWin) {
-	this->sizeToWin = sizeToWin;
-	this->boardsize = size;
-	cells = new CellType * [size];
-	for (unsigned int i = 0; i < size; i++) {
-		cells[i] = new CellType[size];
-		for (unsigned int j = 0; j < size; j++)
+Board::Board(Board* board) {
+	this->sizeToWin = board->sizeToWin;
+	this->boardsize = board->boardsize;
+	cells = new CellType * [boardsize];
+	for (unsigned int i = 0; i < boardsize; i++) {
+		cells[i] = new CellType[boardsize];
+		for (unsigned int j = 0; j < boardsize; j++)
 			cells[i][j] = board->cells[i][j];
 	}
 }
@@ -291,7 +291,6 @@ bool Board::PaintBlock() {
 	}
 	return false;
 }
-#include <chrono>
 
 bool Board::CheckEndCondition() {
 	PaintBlock();

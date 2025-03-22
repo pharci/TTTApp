@@ -15,7 +15,7 @@ private:
 	bool IsBoardFull();
 public:
 	Board(unsigned int size, unsigned int sizeToWin);
-	Board(Board* board, unsigned int size, unsigned int sizeToWin);
+	Board(Board* board);
 	virtual ~Board();
 	void Show(); //Отрисовать доску
 	void SetCell(unsigned int xpos, unsigned int ypos, CellType ct); //Установить значение в клетку

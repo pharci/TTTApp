@@ -2,9 +2,7 @@
 #include "Player.h"
 #include <chrono>
 
-MonteCarloEval::~MonteCarloEval() {
-
-}
+MonteCarloEval::~MonteCarloEval() {}
 
 MonteCarloEval::MonteCarloEval(
 		Board* board, 
@@ -21,7 +19,7 @@ MonteCarloEval::MonteCarloEval(
 
 
 void MonteCarloEval::EvalBoard() {
-	Board* b = new Board(board, board->getBoardsize(), board->getSizeToWin());
+	Board* b = new Board(board);
 	RandomPlayer* player1 = new RandomPlayer();
 	RandomPlayer* player2 = new RandomPlayer();
 	player1->SetupPlayer("RandomX", CellType_X);
@@ -39,12 +37,9 @@ void MonteCarloEval::EvalBoard() {
 		while (!currentPlayer->MakeMove());
 		if (b->CheckEndCondition()) {
 			if (b->IsVictory())
-				if (currentPlayer == player1)
-					numLosses++;
-				else
-					numVictories++;
-			else
-				numDraws++;
+				if (currentPlayer == player1) numLosses++;
+				else numVictories++;
+			else numDraws++;
 			bGameFinished = true;
 		}
 		currentPlayer = (currentPlayer == player1) ? player2 : player1;
