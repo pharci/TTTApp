@@ -60,6 +60,9 @@ void Manager::ShowBoard() {
 
 void Manager::MakeMove() {
 	ShowBoard();
+
+	board->PaintBlock();
+
 	while (!currentPlayer->MakeMove()) {
 		cout << "Недопустимый ход, попробуйте еще раз" << endl;
 		ShowBoard();

@@ -2,8 +2,6 @@
 #include "MonteCarloEval.h"
 
 #include <thread>
-#include <mutex>
-#include <vector>
 
 Player::~Player() {}
 RandomPlayer::~RandomPlayer() {}
@@ -23,6 +21,10 @@ string Player::GetName() {
 	return this->name;
 }
 
+CellType Player::getCellType() {
+	return this->cellType;
+};
+
 
 bool AiPlayer::MakeMove() {
 	vector<MonteCarloEval*> evals;
@@ -32,16 +34,28 @@ bool AiPlayer::MakeMove() {
 
  			if (this->board->CheckLegal(j, i)) {
 
-				//board->SetCell(j, i, this->cellType);
-				//if (board->CheckEndCondition()) return true;
-				//else { board->SetCell(j, i, CellType_Empty); }
+				board->SetCell(j, i, this->cellType);
+				if (board->CheckEndCondition()) { 
+					cout << "Победный ход компьютера: " << i << ", " << j << endl;
+					return true; 
+				}
 
-				evals.push_back(new MonteCarloEval(board, 10, this->cellType, j, i)
-				);
+				board->SetCell(j, i, (this->cellType == CellType_X) ? CellType_O : CellType_X);
+				if (board->CheckEndCondition()) {
+					board->SetCell(j, i, this->cellType);
+					cout << "Заблокирован победный ход противника: " << i << ", " << j << endl;
+					return true;
+				}
+
+				board->SetCell(j, i, CellType_Empty);
+
+				evals.push_back(new MonteCarloEval(board, 10, this->cellType, j, i));
 			}
 		}
 	}
-
+	//for (auto eval : evals) {
+	//	eval->Eval();
+	//}
 
 	std::vector<std::thread> threads;
 	for (auto eval : evals) {
@@ -50,34 +64,18 @@ bool AiPlayer::MakeMove() {
 	}
 	for (auto& t : threads) { t.join(); }
 
-
-
 	
 	int biggestVictories = -1;
 	for (auto eval : evals) {
 		//cout << "Позиция из расчета: " << eval->GetXPos() << ", " << eval->GetYPos() << " Победы: " << eval->GetVictories() << " Поражения: " << eval->GetLosses() << endl;
-
-		if (this->cellType == CellType_X) {
-			if (eval->GetVictories() > biggestVictories)
-				biggestVictories = eval->GetVictories();
-		}
-		else {
-			if (eval->GetLosses() > biggestVictories)
-				biggestVictories = eval->GetLosses();
-		}
+		if (eval->GetVictories() > biggestVictories)
+			biggestVictories = eval->GetVictories();
 	}
 
 	vector<MonteCarloEval*> biggestWinEvals;
 
 	for (auto eval : evals) {
-		int numVictories;
-		if (this->cellType == CellType_X) {
-			numVictories = eval->GetVictories();
-		}
-		else { 
-			numVictories = eval->GetLosses();
-		};
-		if (numVictories == biggestVictories) {
+		if (eval->GetVictories() == biggestVictories) {
 			biggestWinEvals.push_back(eval);
 		}
 	}

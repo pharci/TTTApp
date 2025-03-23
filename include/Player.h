@@ -13,6 +13,7 @@ public:
 	void SetBoard(Board* board);
 	virtual bool MakeMove() = 0;
 	string GetName();
+	CellType getCellType();
 };
 
 class HumanPlayer : public Player {

@@ -277,6 +277,8 @@ bool Board::PaintBlock() {
 		}
 	}
 
+	if (numX + numO == 0) return false;
+
 	//Проверяем является ли количество клеток кратным 5.
 	if ((numX + numO) % 10 == 5 || (numX + numO) % 10 == 0) {
 		for (int i = 0; i < boardsize * boardsize; i++) {
@@ -293,8 +295,6 @@ bool Board::PaintBlock() {
 }
 
 bool Board::CheckEndCondition() {
-	PaintBlock();
-
 	for (unsigned int i = 0; i < boardsize; i++) {
 		if (IsRowMade(i) || IsColumnMade(i))
 			return true;

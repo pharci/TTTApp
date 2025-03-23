@@ -31,18 +31,37 @@ void MonteCarloEval::EvalBoard() {
 	bool bGameFinished = false;
 
 	b->SetCell(xpos, ypos, this->startCellType); //ќсновна€ €чейка дл€ расчета (первый ход)
-	currentPlayer = (this->startCellType == CellType_X) ? player2 : player1;
+	currentPlayer = (this->startCellType == CellType_X) ? player1 : player2;
 
 	while (!bGameFinished) {
+		currentPlayer = (currentPlayer == player1) ? player2 : player1;
+
+		//b->SetCell(xpos, ypos, currentPlayer->getCellType());
+		//if (b->CheckEndCondition()) {
+		//	if (b->IsVictory())
+		//		if (currentPlayer->getCellType() == this->startCellType) numVictories++;
+		//		else numLosses++;
+		//	else numDraws++;
+		//	bGameFinished = true;
+		//	continue;
+		//}
+
+		//b->SetCell(xpos, ypos, (currentPlayer->getCellType() == CellType_X) ? CellType_O : CellType_X);
+		//if (b->CheckEndCondition()) {
+		//	b->SetCell(xpos, ypos, currentPlayer->getCellType());
+		//	continue;
+		//}
+
+		//b->SetCell(xpos, ypos, CellType_Empty);
+
 		while (!currentPlayer->MakeMove());
 		if (b->CheckEndCondition()) {
 			if (b->IsVictory())
-				if (currentPlayer == player1) numLosses++;
-				else numVictories++;
+				if (currentPlayer->getCellType() == this->startCellType) numVictories++;
+				else numLosses++;
 			else numDraws++;
 			bGameFinished = true;
 		}
-		currentPlayer = (currentPlayer == player1) ? player2 : player1;
 	}
 }
 
